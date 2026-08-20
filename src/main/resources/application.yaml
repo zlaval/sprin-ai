@@ -1,3 +1,17 @@
 spring:
   application:
     name: spring-ai-course
+  ai:
+    model:
+      chat: openai
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        temperature: 1.0
+        model: gpt-4o-mini
+
+
+logging.level:
+  org:
+    springframework: INFO
+    springframework.ai.chat.client.advisor: DEBUG
