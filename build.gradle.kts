@@ -32,7 +32,6 @@ dependencies {
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
    //implementation("org.springframework.ai:spring-ai-starter-vector-store-pgvector")
     //implementation("org.springframework.ai:spring-ai-vector-store-advisor")
-    implementation("me.paulschwarz:spring-dotenv:5.1.0")
 }
 
 dependencyManagement {
