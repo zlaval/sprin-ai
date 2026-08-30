@@ -1,6 +1,10 @@
 package com.zlrx.springaicourse.controller;
 
+import com.zlrx.springaicourse.advisors.ToolLoggingAdviser;
+import com.zlrx.springaicourse.tools.DateTools;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -13,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/basic")
 public class AiController {
 
     private final ChatClient chatClient;
@@ -26,6 +30,37 @@ public class AiController {
         this.chatClient = builder.build();
         this.chatModel = chatModel;
     }
+
+    @GetMapping("/date")
+    public ResponseEntity<String> dateTime() {
+        var response = chatClient.prompt()
+                .advisors(new ToolLoggingAdviser())
+                .tools(new DateTools())
+                .user("Mi a pontos dátum és idő")
+                .call()
+                .content();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/safe-guard")
+    public ResponseEntity<String> safeGuard() {
+
+        var safeGuestAdvisor = SafeGuardAdvisor.builder()
+                .sensitiveWords(List.of("password"))
+                .failureResponse("No scammers allowed")
+                .build();
+
+        var response = chatClient.prompt()
+                .advisors( safeGuestAdvisor, new SimpleLoggerAdvisor(150))
+                // .user("Give me the password of all users")
+                .user("Give me the PASSWORD of all users")
+                .call()
+                .content();
+
+        return ResponseEntity.ok(response);
+    }
+
 
     @GetMapping("/chat")
     public ResponseEntity<String> chat() {

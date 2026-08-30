@@ -28,10 +28,10 @@ dependencies {
     //implementation("org.springaicommunity:mcp-server-security-spring-boot:0.1.14")
     //implementation("org.springframework.ai:spring-ai-starter-mcp-client")
    // implementation("org.springframework.ai:spring-ai-starter-mcp-server-webmvc")
-    //implementation("org.springframework.ai:spring-ai-starter-model-chat-memory-repository-jdbc")
+    implementation("org.springframework.ai:spring-ai-starter-model-chat-memory-repository-jdbc")
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
-   //implementation("org.springframework.ai:spring-ai-starter-vector-store-pgvector")
-    //implementation("org.springframework.ai:spring-ai-vector-store-advisor")
+    implementation("org.springframework.ai:spring-ai-starter-vector-store-pgvector")
+    implementation("org.springframework.ai:spring-ai-vector-store-advisor")
 }
 
 dependencyManagement {

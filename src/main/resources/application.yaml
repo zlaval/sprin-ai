@@ -9,9 +9,25 @@ spring:
       chat:
         temperature: 1.0
         model: gpt-4o-mini
-
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1536
+        max-document-batch-size: 10000
+        initialize-schema: true
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: admin
+    password: admin123
+    driver-class-name: org.postgresql.Driver
 
 logging.level:
-  org:
-    springframework: INFO
-    springframework.ai.chat.client.advisor: DEBUG
+  org.springframework: INFO
+  org.springframework.ai.chat.client.advisor: DEBUG
+#  org.springframework.ai.model.tool.DefaultToolCallingManager: DEBUG
