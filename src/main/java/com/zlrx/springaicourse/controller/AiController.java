@@ -31,6 +31,7 @@ public class AiController {
         this.chatModel = chatModel;
     }
 
+    // Simple tool usage example
     @GetMapping("/date")
     public ResponseEntity<String> dateTime() {
         var response = chatClient.prompt()
@@ -43,6 +44,7 @@ public class AiController {
         return ResponseEntity.ok(response);
     }
 
+    // Simple built in advisor to filter sensitive words
     @GetMapping("/safe-guard")
     public ResponseEntity<String> safeGuard() {
 
@@ -61,7 +63,7 @@ public class AiController {
         return ResponseEntity.ok(response);
     }
 
-
+    //first ai call example
     @GetMapping("/chat")
     public ResponseEntity<String> chat() {
         var response = chatClient.prompt().user("Mondj egy jó viccet")
@@ -71,6 +73,7 @@ public class AiController {
         return ResponseEntity.ok(response);
     }
 
+    // chatmodel example
     @GetMapping("/chat-data")
     public ResponseEntity<ChatResponse> chatDate() {
         var prompt = new Prompt("Mesélj egy érdekes dolgot Mátyás királyról");
@@ -78,6 +81,7 @@ public class AiController {
         return ResponseEntity.ok(response);
     }
 
+    // LLM options example
     @GetMapping("/chat-options")
     public List<String> chatOptions() {
         var options = OpenAiChatOptions.builder()
