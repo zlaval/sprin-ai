@@ -1,6 +1,7 @@
 package com.zlrx.springaicourse.controller;
 
 import com.zlrx.springaicourse.advisors.ToolLoggingAdviser;
+import com.zlrx.springaicourse.model.ActorFilms;
 import com.zlrx.springaicourse.tools.DateTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
@@ -12,6 +13,7 @@ import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -40,6 +42,21 @@ public class AiController {
                 .user("Mi a pontos dátum és idő")
                 .call()
                 .content();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/actor-films")
+    public ResponseEntity<ActorFilms> actorFilms(@RequestParam("name") String name) {
+        var response = chatClient.prompt()
+                .system("""
+                        Generate a fictional actor profile using the supplied name exactly.
+                        Invent an age and three mock films with titles and release years.
+                        This is sample data, not a factual biography or real filmography.
+                        """)
+                .user(name)
+                .call()
+                .entity(ActorFilms.class, ChatClient.EntityParamSpec::validateSchema);
 
         return ResponseEntity.ok(response);
     }
