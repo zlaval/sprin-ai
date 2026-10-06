@@ -1,0 +1,87 @@
+# IntelliJ HTTP Client: start the application, then run requests 1-4 in order.
+# Initialization captures the session ID for the following requests.
+# After restarting the application, initialize a new session.
+@baseUrl = http://localhost:8080
+@protocolVersion = 2025-06-18
+
+### 1. Initialize the MCP session
+POST {{baseUrl}}/mcp
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "{{protocolVersion}}",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "actor-films-http-client",
+      "version": "1.0.0"
+    }
+  }
+}
+
+> {%
+    const sessionId = response.headers.valueOf("Mcp-Session-Id");
+    if (!sessionId) {
+        throw new Error("MCP initialization did not return a session ID.");
+    }
+    client.global.set("actorFilmsMcpSessionId", sessionId);
+%}
+
+### 2. Notify the server that initialization is complete (202 expected)
+POST {{baseUrl}}/mcp
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: {{actorFilmsMcpSessionId}}
+MCP-Protocol-Version: {{protocolVersion}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/initialized"
+}
+
+### 3. List tools (get_actor_films includes an output schema)
+POST {{baseUrl}}/mcp
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: {{actorFilmsMcpSessionId}}
+MCP-Protocol-Version: {{protocolVersion}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/list",
+  "params": {}
+}
+
+### 4. Call get_actor_films (result.structuredContent contains Alex Example, age 35, and three films)
+POST {{baseUrl}}/mcp
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: {{actorFilmsMcpSessionId}}
+MCP-Protocol-Version: {{protocolVersion}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "get_actor_films",
+    "arguments": {}
+  }
+}
+
+### 5. Close the MCP session when finished (optional)
+DELETE {{baseUrl}}/mcp
+Accept: application/json, text/event-stream
+Mcp-Session-Id: {{actorFilmsMcpSessionId}}
+MCP-Protocol-Version: {{protocolVersion}}
+
+> {%
+    if (response.status >= 200 && response.status < 300) {
+        client.global.clear("actorFilmsMcpSessionId");
+    }
+%}

@@ -2,6 +2,25 @@ spring:
   application:
     name: spring-ai-course
   ai:
+    mcp:
+      server:
+        name: chat-memory-server
+        type: SYNC
+        protocol: STREAMABLE
+        streamable-http:
+          mcp-endpoint: /mcp
+      client:
+        name: chat-memory-client
+        type: SYNC
+        # The local MCP server must be running before the client connects.
+        initialized: false
+        toolcallback:
+          enabled: false
+        streamable-http:
+          connections:
+            chat-memory:
+              url: ${MCP_CHAT_MEMORY_URL:http://localhost:${server.port:8080}}
+              endpoint: /mcp
     model:
       chat: openai
     openai:
